@@ -1,0 +1,20 @@
+﻿using pet.Application.DTOs;
+using pet.Domain.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace pet.Application.Interfaces
+{
+    public interface IPetService
+    {
+        Task AdicionarPet (PetCreateDTO pet);
+        Task <List<Pet>> ListarPet();
+        Task DesativarPet(long id);
+        Task <Pet> BuscarPorId (long id);
+        
+        
+    }
+}
