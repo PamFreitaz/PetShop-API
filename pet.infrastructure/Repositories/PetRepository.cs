@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using pet.Domain.Entity;
+using pet.Domain.Enum;
 using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using System;
@@ -39,8 +40,39 @@ namespace pet.Infrastructure.Repositories
             using (var DbConnection = connection.CreateConnection())
             {
                 var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte, raca, cor, ativo FROM pet WHERE id = @id";
-                return await DbConnection.QueryFirstOrDefaultAsync<Pet>(SqlQuery, new{Id = id });
+                var resultado = await DbConnection.QueryFirstOrDefaultAsync<dynamic>(SqlQuery, new { Id = id });
+
+                var especie = (Especie)resultado.especie;
+                if (resultado == null)
+                    return null;
+
+                if (especie == Especie.Cachorro)
+                {
+                    return new Cachorro(
+                        resultado.id,
+                        resultado.nome,
+                        resultado.datanascimento,
+                        resultado.tutorid,
+                        especie,
+                        resultado.ativo,
+                        (Porte)resultado.porte,
+                        resultado.raca,
+                        resultado.cor
+                        );
+                }
+
+                if (especie == Especie.Gato)
+                {
+                    return new Gato
+                    (
+                        resultado.Id,
+                        resultado.Nome
+                    );
+                }
+
+                throw new Exception("Tipo de pet inválido");
             }
+
         }
 
         public async Task Desativar(long id)

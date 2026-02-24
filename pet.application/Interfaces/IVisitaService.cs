@@ -11,9 +11,10 @@ namespace pet.Application.Interfaces
     public interface IVisitaService
     {
         Task AdicionarVisita (VisitaCreateDTO visita);
-        Task<List<Visita>> ListarVista();
+        Task<List<Visita>> ListarVisita();
         Task<Visita> BuscarVisitaPorId(long id);
-        Task AtualizarVisita(VisitaUpdateDTO visita);
+        Task AtualizarVisita(long id, VisitaUpdateDTO visita);
         Task CancelarVisita(long id);
+        Task FinalizarVisita(long id);
     }
 }

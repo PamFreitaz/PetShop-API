@@ -14,18 +14,21 @@ namespace pet.Domain.Entity
         public Servicos Servicos { get; set; }
         public long PetId { get; set; }
         public double Valor { get; set; }
+        public StatusVisita StatusVisita { get; set; }
+
 
         public Visita()
         {
         }
 
-        public Visita(int id, DateTime data, Servicos servicos, long petId, double valor)
+        public Visita(int id, DateTime data, Servicos servicos, long petId, double valor, StatusVisita statusVisita)
         {
             Id = id;
             Data = data;
             Servicos = servicos;
             PetId = petId;
             Valor = valor;
+            StatusVisita = statusVisita;
         }
     }
 }

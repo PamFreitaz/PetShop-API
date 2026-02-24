@@ -13,19 +13,21 @@ namespace pet.Application.DTOs
         public DateTime? Data { get; set; }
         public Servicos? Servicos { get; set; }
         public long? PetId { get; set; }
-        public decimal? Valor { get; set; }
+        public double? Valor { get; set; }
+        public StatusVisita? statusVisita { get; set; }
 
         public VisitaUpdateDTO()
         {
             
         }
 
-        public VisitaUpdateDTO(DateTime? data, Servicos? servicos, long? petId, decimal? valor)
+        public VisitaUpdateDTO(DateTime? data, Servicos? servicos, long? petId, double? valor, StatusVisita? statusVisita)
         {
             Data = data;
             Servicos = servicos;
             PetId = petId;
             Valor = valor;
+            this.statusVisita = statusVisita;
         }
     }
     

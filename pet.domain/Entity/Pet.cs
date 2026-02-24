@@ -15,16 +15,13 @@ namespace pet.Domain.Entity
         public long TutorId { get; set; }
         public Especie Especie { get; set; }
         public bool Ativo {  get; set; }
-        public Porte? Porte { get; set; }
-        public string? Raca { get; set; }
-        public string? Cor {  get; set; }
-
+        
         public Pet()
         {
             
         }
 
-        public Pet(long id, string nome, DateTime dataNascimento, long tutorId, Especie especie, bool ativo, Porte? porte, string? raca, string? cor )
+        public Pet(long id, string nome, DateTime dataNascimento, long tutorId, Especie especie, bool ativo)
         {
             Id = id;
             Nome = nome;
@@ -32,9 +29,12 @@ namespace pet.Domain.Entity
             TutorId = tutorId;
             Especie = especie;
             Ativo = ativo;
-            Porte = porte;
-            Raca = raca;
-            Cor = cor;
+            
+        }
+        //forma de abstração sem obrigatoriedade
+        public virtual double MultiplicadorDePorte()
+        {
+            throw new Exception("Tipo de pet não suporta cálculo");
         }
     }
 }

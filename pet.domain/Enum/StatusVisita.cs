@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace pet.Domain.Enum
 {
-    public enum Servicos
+    public enum StatusVisita
     {
-        Banho ,        
-        BanhoETosaHigienica  ,
-        BanhoETosaCompleta,
-        DayCare        
+        Agendado,
+        EmAndamento,
+        Finalizada,
+        Cancelada
     }
 }

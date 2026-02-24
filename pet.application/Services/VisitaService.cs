@@ -16,29 +16,24 @@ namespace pet.Application.Services
     {
         public readonly IVisitaRepository VisitaRepository;
         public readonly IPetRepository PetRepository;
-        public VisitaService(IVisitaRepository repository, IPetRepository petRepository)
+        public readonly IServicoRepository ServicoRepository;
+        public VisitaService(IVisitaRepository repository, IPetRepository petRepository, IServicoRepository servicoRepository)
         {
             VisitaRepository = repository;
             PetRepository = petRepository;
+            ServicoRepository = servicoRepository;
         }
         public async Task AdicionarVisita(VisitaCreateDTO visita)
         {   //uso o metodo BuscarPorId do PetRepository para me trazer as informações do Pet
             var pet = await PetRepository.BuscarPorId(visita.PetId);
+            //uso o metodo BuscarPorIa do ServicoRepository para trazer a informação do enum servicos, por isso o (int)
+            var servico = await ServicoRepository.BuscarPorId((int)visita.Servicos);
 
-            double valor = 0;
+            double Multiplicador = pet.MultiplicadorDePorte();
 
-            if (pet.Porte == Porte.Pequeno)
-            {
-                valor = (double)visita.Servicos;
-            }
-            else if (pet.Porte == Porte.Medio)
-            {
-                valor = (double)visita.Servicos * 1.10;
-            }
-            else if (pet.Porte == Porte.Grande)
-            {
-                valor = (double)visita.Servicos * 1.25;
-            }
+
+            double valor = servico.Preco * Multiplicador;
+
             var visitaEntity = new Visita
             {
 
@@ -46,14 +41,44 @@ namespace pet.Application.Services
                 Servicos = visita.Servicos,
                 PetId = visita.PetId,
                 Valor = valor,
+                //toda vez que criar uma visita vai setar como agendado
+                StatusVisita = StatusVisita.Agendado,
             };
             await VisitaRepository.Adicionar(visitaEntity);
 
         }
 
-        public Task AtualizarVisita(VisitaUpdateDTO visita)
+        public async Task AtualizarVisita(long id, VisitaUpdateDTO visita)
         {
-            throw new NotImplementedException();
+            var visitaExistente = await BuscarVisitaPorId(id);
+
+            if (visitaExistente == null)
+            {
+                throw new Exception("Visita não encontrada");
+            }  
+            if (visita.Data.HasValue)
+            {
+                visitaExistente.Data = visita.Data.Value;
+            }
+            if (visita.Servicos.HasValue)
+            {
+                visitaExistente.Servicos = visita.Servicos.Value;
+            }
+            if (visita.PetId.HasValue)
+            {
+                visitaExistente.PetId = visita.PetId.Value;
+            }
+            if (visita.Valor.HasValue)
+            {
+                visitaExistente.Valor = visita.Valor.Value;
+            }
+            if (visita.statusVisita.HasValue)
+            {
+                visitaExistente.StatusVisita = visita.statusVisita.Value;
+            }
+            await VisitaRepository.Atualizar(visitaExistente);
+                         
+
         }
 
         public Task<Visita> BuscarVisitaPorId(long id)
@@ -61,14 +86,29 @@ namespace pet.Application.Services
             return VisitaRepository.BuscarPorId(id);
         }
 
-        public Task CancelarVisita(long id)
+        public async Task CancelarVisita(long id)
         {
-            return VisitaRepository.Cancelar(id);
+            var visita = await BuscarVisitaPorId(id);
+
+            if (visita == null)
+            {
+                throw new Exception("Visita não encontrada.");
+            }
+
+            if (visita.StatusVisita != StatusVisita.Agendado)
+            {
+                throw new Exception($"Não é possível cancelar essa visita, o status atual dessa visita é: {visita.StatusVisita}");
+            }
+            await VisitaRepository.Cancelar(id);
         }
 
-        public Task<List<Visita>> ListarVista()
+        public Task<List<Visita>> ListarVisita()
         {
             return VisitaRepository.Listar();
+        }
+        public Task FinalizarVisita(long id)
+        {
+            return VisitaRepository.Finalizar(id);
         }
     }
 }

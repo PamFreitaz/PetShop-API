@@ -14,5 +14,6 @@ namespace pet.Domain.Interfaces
         Task<Visita> BuscarPorId(long id);
         Task Atualizar(Visita visita);
         Task Cancelar(long id);
+        Task Finalizar(long id);
     }
 }
