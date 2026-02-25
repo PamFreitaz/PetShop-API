@@ -1,0 +1,67 @@
+﻿using Dapper;
+using pet.Domain.Entity;
+using pet.Domain.Interfaces;
+using pet.Infrastructure.ConexaoDb;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace pet.Infrastructure.Repositories
+{
+    public class ProdutoRepository : IProdutoRepository
+    {
+        public readonly DbConnection Connection;
+
+        public ProdutoRepository(DbConnection Db)
+        {
+            Connection = Db;
+        }
+
+        public async Task Cadastrar(Produto produto)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "INSERT INTO produto (nome, descricao, valor, ativo) VALUES (@Nome, @Descricao, @Valor, @Ativo)";
+                await DbConnection.ExecuteAsync(SqlQuery, produto);
+            }    
+        }
+
+        public async Task<List<Produto>> Listar()
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT * FROM produto";
+                return (await DbConnection.QueryAsync<Produto>(SqlQuery)).ToList();
+            }
+        }
+
+        public async Task<Produto> Buscar(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo FROM produto WHERE Id = @Id";
+                return await DbConnection.QueryFirstOrDefaultAsync<Produto>(SqlQuery, new { Id = id });
+            }
+        }
+
+        public async Task Atualizar(Produto produto)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "UPDATE produto SET nome = @Nome, descricao = @Descricao, valor = @Valor, ativo = @Ativo WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, produto);
+            }
+        }
+
+        public async Task Deletar(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "DELETE * FROM produto WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id });
+            }
+        }
+    }
+}

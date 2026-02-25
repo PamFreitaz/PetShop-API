@@ -34,11 +34,22 @@ builder.Services.AddSwaggerGen(c =>
     // Usando o Scoped
     builder.Services.AddScoped<ITutorService, TutorService>();
     builder.Services.AddScoped<ITutorRepository, TutorRepository>();
+
     builder.Services.AddScoped<IPetRepository, PetRepository>();
     builder.Services.AddScoped<IPetService, PetService>();
+
     builder.Services.AddScoped<IVisitaService, VisitaService>();
     builder.Services.AddScoped<IVisitaRepository, VisitaRepository>();
+
     builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+
+    builder.Services.AddScoped<IProdutoService, ProdutoService>();
+    builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+
+    builder.Services.AddScoped<IPedidoService, PedidoService>();
+    builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+
+    builder.Services.AddScoped<IItemPedidoRepository, ItemPedidoRepository>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
