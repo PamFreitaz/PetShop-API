@@ -59,6 +59,10 @@ namespace pet.Application.Services
             {
                 produtoExistente.Ativo = produto.Ativo.Value;
             }
+            if (produto.CategoriaId.HasValue)
+            {
+                produtoExistente.CategoriaId = produto.CategoriaId.Value;
+            }
 
             await ProdutoRepository.Atualizar(produtoExistente);
         }
@@ -66,6 +70,11 @@ namespace pet.Application.Services
         public Task DeletarProduto(long id)
         {
             return ProdutoRepository.Deletar(id);
+        }
+
+        public Task<List<Produto>> ListarProdutoPorCategoria(long id)
+        {
+            return ProdutoRepository.ListarPorCategoria(id);
         }
     }
 }

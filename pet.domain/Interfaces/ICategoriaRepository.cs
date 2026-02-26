@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace pet.Domain.Interfaces
 {
-    public interface IItemPedidoRepository
+    public interface ICategoriaRepository
     {
-        Task<long> Adicionar(ItemPedido itemPedido);
-        Task RemoverItensPedido(long id);
+        Task Adicionar(Categoria categoria);
+        Task<List<Categoria>> Listar();
+        Task<Categoria> BuscarPorId(long id);
     }
 }

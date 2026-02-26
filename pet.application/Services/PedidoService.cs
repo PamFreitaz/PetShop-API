@@ -24,6 +24,8 @@ namespace pet.Application.Services
             itemPedidoRepository = itemPedido;
         }
 
+        
+
         public async Task CriarPedido(PedidoCreateDTO pedidoDTO)
         {
             //se o pedido for nullo ou menor que 1, vai dar o erro de Pedido tem que ter algum item
@@ -69,5 +71,83 @@ namespace pet.Application.Services
             await pedidoRepository.AtualizarTotal(pedidoId, Total);
             
         }
+        public Task<Pedido> BuscarPedidoPorId(long id)
+        {
+            return pedidoRepository.BuscarPorId(id);
+        }
+
+        public Task<List<Pedido>> ListarPedidos()
+        {
+            return pedidoRepository.Listar();
+        }
+
+        public Task<List<Pedido>> ListarPedidosPorTutor(long id)
+        {
+            return pedidoRepository.ListarPorTutor(id);
+        }
+        public async Task MudarStatusPedido(long id, PedidoUpdateDTO pedidoDTO)
+        {
+            var mudarStatusExistente = await BuscarPedidoPorId(id);
+            if (mudarStatusExistente == null)
+            {
+                throw new Exception("Pedido não encontrado");
+            }
+            if (pedidoDTO.StatusPedido.HasValue)
+            {
+                mudarStatusExistente.StatusPedido = pedidoDTO.StatusPedido.Value;
+            }
+
+            await pedidoRepository.MudarStatus(id, mudarStatusExistente);
+        }
+
+        public async Task AtualizarPedido(long id, PedidoUpdateDTO pedidoDTO)
+        {
+            var pedidoExistente = await BuscarPedidoPorId(id);
+
+            if (pedidoExistente == null)
+            {
+                throw new Exception("Pedido não encontrado");
+            }
+            if(pedidoDTO.StatusPedido.HasValue)
+            {
+                pedidoExistente.StatusPedido = pedidoDTO.StatusPedido.Value;
+            }
+            if(pedidoDTO.ValorTotal.HasValue)
+            {
+                pedidoExistente.ValorTotal = pedidoDTO.ValorTotal.Value;
+            }
+            if (pedidoDTO.ItensPedidos != null && pedidoDTO.ItensPedidos.Any())
+            {
+                await itemPedidoRepository.RemoverItensPedido(id);
+
+                double novoTotal = 0;
+
+                foreach(var itemDTO in pedidoDTO.ItensPedidos)
+                {
+                    var produto = await produtoRepository.Buscar(itemDTO.ProdutoId); 
+                    var subTotal = produto.Valor * itemDTO.Quantidade;
+
+                    var itemPedido = new ItemPedido
+                    {
+                        PedidoId = id,
+                        ProdutoId = itemDTO.ProdutoId,
+                        Quantidade = itemDTO.Quantidade,
+                        ValorUnitario = produto.Valor,
+                        Subtotal = subTotal,
+                    };
+                    
+                    await itemPedidoRepository.Adicionar(itemPedido);
+                    
+                    novoTotal += subTotal;
+                }
+            }
+            await pedidoRepository.Atualizar(id, pedidoExistente);
+        }
+
+        public Task CancelarPedido(long id)
+        {
+            return pedidoRepository.Cancelar(id);
+        }
+        
     }
 }

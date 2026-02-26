@@ -11,6 +11,7 @@ namespace pet.Domain.Enum
         PedidoEmAnalise,
         PagamentoConfirmado,
         Enviado,
-        Entregue
+        Entregue,
+        Cancelado
     }
 }

@@ -49,5 +49,12 @@ namespace pet.API.Controllers
             await produtoService.DeletarProduto(id);
             return Ok("Produto deletado com sucesso");
         }
+
+        [HttpGet("buscarporcategoria/{id}")]
+        public async Task<IActionResult>BuscarporCategoria(long id)
+        {
+            var categoria = await produtoService.ListarProdutoPorCategoria(id);
+            return Ok(categoria);
+        }
     }
 }

@@ -27,5 +27,13 @@ namespace pet.Infrastructure.Repositories
                 return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, itemPedido);
             }
         }
+        public async Task RemoverItensPedido(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "DELETE * FROM item_pedido WHERE pedido_id = @PedidoId";
+                await DbConnection.ExecuteAsync(SqlQuery, new {PedidoId = id});
+            }
+        }
     }
 }

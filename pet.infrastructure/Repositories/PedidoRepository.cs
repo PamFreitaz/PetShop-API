@@ -36,6 +36,58 @@ namespace pet.Infrastructure.Repositories
                 await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, ValorTotal = Total });
             }   
         }
+
+        public async Task<Pedido> BuscarPorId(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id , data_criacao::timestamp AS DataCriacao, valor_total AS ValorTotal, status AS StatusPedido, tutor_id AS TutorId FROM pedido WHERE Id = @Id";
+                return await DbConnection.QueryFirstOrDefaultAsync<Pedido>(SqlQuery, new { Id = id });
+            }
+        }
+
+        public async Task<List<Pedido>> Listar()
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id , data_criacao::timestamp AS DataCriacao, valor_total AS ValorTotal, status AS StatusPedido, tutor_id AS TutorId FROM pedido ";
+                return (await DbConnection.QueryAsync<Pedido>(SqlQuery)).ToList();
+            }
+        }
+
+        public async Task<List<Pedido>> ListarPorTutor(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id , data_criacao::timestamp AS DataCriacao, valor_total AS ValorTotal, status AS StatusPedido, tutor_id AS TutorId FROM pedido WHERE tutor_id = @TutorId";
+                return (await DbConnection.QueryAsync<Pedido>(SqlQuery, new {TutorId =  id})).ToList();
+            }
+        }
+        public async Task Atualizar(long id, Pedido pedido)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "UPDATE pedido SET data_criacao = @DataCriacao, valor_total = @ValorTotal, status = @StatusPedido, tutor_id = @TutorId WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, pedido);
+            }
+        }
+        public async Task Cancelar(long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "UPDATE pedido SET status = 4 WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id });
+            }
+        }
+
+        public async Task MudarStatus(long id, Pedido pedido)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "UPDATE pedido SET status = @StatusPedido WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, pedido);
+            }
+        }
     }
 }
 

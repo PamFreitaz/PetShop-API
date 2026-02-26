@@ -15,6 +15,6 @@ namespace pet.Application.Interfaces
         Task<Produto> BuscarProduto(long id);
         Task AtualizarProduto(long id, ProdutoUpdateDTO produto);
         Task DeletarProduto(long id);
-
+        Task<List<Produto>>ListarProdutoPorCategoria(long id);
     }
 }

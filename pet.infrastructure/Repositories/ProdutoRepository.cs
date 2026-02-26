@@ -23,7 +23,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "INSERT INTO produto (nome, descricao, valor, ativo) VALUES (@Nome, @Descricao, @Valor, @Ativo)";
+                var SqlQuery = "INSERT INTO produto (nome, descricao, valor, ativo, categoria_id) VALUES (@Nome, @Descricao, @Valor, @Ativo, @CategoriaId)";
                 await DbConnection.ExecuteAsync(SqlQuery, produto);
             }    
         }
@@ -32,7 +32,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT * FROM produto";
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId FROM produto";
                 return (await DbConnection.QueryAsync<Produto>(SqlQuery)).ToList();
             }
         }
@@ -41,7 +41,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, descricao, valor, ativo FROM produto WHERE Id = @Id";
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId FROM produto WHERE Id = @Id";
                 return await DbConnection.QueryFirstOrDefaultAsync<Produto>(SqlQuery, new { Id = id });
             }
         }
@@ -50,7 +50,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "UPDATE produto SET nome = @Nome, descricao = @Descricao, valor = @Valor, ativo = @Ativo WHERE Id = @Id";
+                var SqlQuery = "UPDATE produto SET nome = @Nome, descricao = @Descricao, valor = @Valor, ativo = @Ativo, categoria_id = @CategoriaId WHERE Id = @Id";
                 await DbConnection.ExecuteAsync(SqlQuery, produto);
             }
         }
@@ -61,6 +61,15 @@ namespace pet.Infrastructure.Repositories
             {
                 var SqlQuery = "DELETE * FROM produto WHERE Id = @Id";
                 await DbConnection.ExecuteAsync(SqlQuery, new { Id = id });
+            }
+        }
+
+        public async Task<List<Produto>> ListarPorCategoria(long id)
+        {
+            using ( var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId FROM produto WHERE categoria_id = @CategoriaId";
+                return (await DbConnection.QueryAsync<Produto>(SqlQuery,new {CategoriaId = id})).ToList();
             }
         }
     }

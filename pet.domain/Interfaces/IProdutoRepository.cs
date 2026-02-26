@@ -14,5 +14,6 @@ namespace pet.Domain.Interfaces
         Task<Produto> Buscar(long id);
         Task Atualizar(Produto produto);
         Task Deletar(long id);
+        Task<List<Produto>>ListarPorCategoria(long id);
     }
 }

@@ -51,9 +51,12 @@ builder.Services.AddSwaggerGen(c =>
 
     builder.Services.AddScoped<IItemPedidoRepository, ItemPedidoRepository>();
 
+    builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+    builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
