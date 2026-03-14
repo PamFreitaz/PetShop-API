@@ -39,7 +39,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte, raca, cor, ativo FROM pet WHERE id = @id";
+                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte AS Porte, raca AS Raca, cor AS Cor, ativo FROM pet WHERE id = @id";
                 var resultado = await DbConnection.QueryFirstOrDefaultAsync<dynamic>(SqlQuery, new { Id = id });
 
                 var especie = (Especie)resultado.especie;
@@ -88,8 +88,19 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte, raca, cor, ativo FROM pet";
-                return (await DbConnection.QueryAsync<Pet>(SqlQuery)).ToList();
+                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte AS Porte, raca AS Raca, cor AS Cor, ativo FROM pet";
+                var resultado = await DbConnection.QueryAsync<dynamic>(SqlQuery);
+
+                //usando lambda
+                return resultado.Select<dynamic, Pet>(r =>
+                {
+                    var especie = (Especie)r.especie;
+                    if (especie == Especie.Cachorro)
+                        return new Cachorro(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, (Porte)r.porte, r.raca, r.cor);
+                    if (especie == Especie.Gato)
+                        return new Gato(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, r.raca, r.cor);
+                    throw new Exception("Tipo de pet inválido");
+                }).ToList();
             }
         }
     }

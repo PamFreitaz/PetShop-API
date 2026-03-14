@@ -28,7 +28,7 @@ namespace pet.API.Controllers
             var pet = await service.BuscarPorId(id);
             return Ok(pet);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Deletar(long id)
         {
             await service.DesativarPet(id);

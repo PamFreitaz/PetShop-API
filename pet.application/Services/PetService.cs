@@ -57,9 +57,10 @@ namespace pet.Application.Services
 
         }
 
-        public Task<Pet> BuscarPorId(long id)
+        public async Task<PetResponseDTO> BuscarPorId(long id)
         {
-            return repository.BuscarPorId(id);
+            var pet = await repository.BuscarPorId(id);
+            return ConverterParaDTO(pet);
         }
 
         public Task DesativarPet(long id)
@@ -67,9 +68,26 @@ namespace pet.Application.Services
             return repository.Desativar(id);
         }
 
-        public Task<List<Pet>> ListarPet()
+        public async Task<List<PetResponseDTO>> ListarPet()
         {
-            return repository.Listar();
+            var pets = await repository.Listar();
+            return pets.Select(ConverterParaDTO).ToList();
+        }
+
+        private PetResponseDTO ConverterParaDTO(Pet pet)
+        {
+            return new PetResponseDTO
+            {
+                Id = pet.Id,
+                Nome = pet.Nome,
+                DataNascimento = pet.DataNascimento,
+                TutorId = pet.TutorId,
+                Especie = pet.Especie,
+                Ativo = pet.Ativo,
+                Porte = pet is Cachorro cachorro ? cachorro.Porte : null,
+                Raca = pet is Cachorro c ? c.Raca : (pet is Gato gato ? gato.Raca : null),
+                Cor = pet is Cachorro c2 ? c2.Cor : (pet is Gato g2 ? g2.Cor : null),
+            };
         }
     }
 }

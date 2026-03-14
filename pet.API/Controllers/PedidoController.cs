@@ -40,13 +40,13 @@ namespace pet.API.Controllers
             var listarPorTutor = await pedidoService.ListarPedidosPorTutor(id);
             return Ok(listarPorTutor);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarPedido(long id, PedidoUpdateDTO pedido)
         {
             await pedidoService.AtualizarPedido(id, pedido);
             return Ok("Pedido Atualizado com Sucesso");
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> CancelarPedido(long id)
         {
             await pedidoService.CancelarPedido(id);

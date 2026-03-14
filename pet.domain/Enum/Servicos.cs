@@ -8,9 +8,9 @@ namespace pet.Domain.Enum
 {
     public enum Servicos
     {
-        Banho ,        
-        BanhoETosaHigienica  ,
-        BanhoETosaCompleta,
-        DayCare        
+        Banho = 1 ,        
+        BanhoETosaHigienica = 2  ,
+        BanhoETosaCompleta = 3,
+        DayCare = 4        
     }
 }

@@ -33,20 +33,20 @@ namespace pet.API.Controllers
             var visitas = await VisitaService.BuscarVisitaPorId(id);
             return Ok(visitas);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Atualizar(long id, VisitaUpdateDTO Visita)
         {
             await VisitaService.AtualizarVisita(id, Visita);
             return Ok("Visita atualizada com sucesso");
         }
-        [HttpDelete("/cancelar/{id}")]
+        [HttpDelete("cancelar/{id}")]
         public async Task<IActionResult> Cancelar(long id)
         {
             await VisitaService.CancelarVisita(id);
             return Ok("Visita Cancelada com sucesso");
         }
 
-        [HttpPut("/finalizar/{id}")]
+        [HttpPut("finalizar/{id}")]
         public async Task<IActionResult> Finalizar(long id)
         {
             await VisitaService.FinalizarVisita(id);

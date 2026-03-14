@@ -15,7 +15,7 @@ namespace pet.Application.Interfaces
         Task <Tutor> BuscarPorId(long id);
 
         
-        Task<List<Pet>> BuscarPets(long id);
+        Task<List<PetResponseDTO>> BuscarPets(long id);
         /*
         Task AlterarDadosTutor(long id, Tutor tutor);*/
 

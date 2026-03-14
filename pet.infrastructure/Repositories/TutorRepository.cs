@@ -1,4 +1,6 @@
-﻿using pet.Domain.Entity;
+﻿using Dapper;
+using pet.Domain.Entity;
+using pet.Domain.Enum;
 using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using System;
@@ -6,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
 
 namespace pet.Infrastructure.Repositories
 {
@@ -48,13 +49,20 @@ namespace pet.Infrastructure.Repositories
         {
             using (var dbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte, raca, cor, ativo FROM pet WHERE tutor_id = @Id";
-                return (await dbConnection.QueryAsync<Pet>(SqlQuery, new { Id = id })).ToList();
+                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte AS Porte, raca AS Raca, cor AS Cor, ativo FROM pet WHERE tutor_id = @Id";
+                var resultado = await dbConnection.QueryAsync<dynamic>(SqlQuery, new { Id = id });
+
+                return resultado.Select<dynamic, Pet>(r =>
+                {
+                    var especie = (Especie)r.especie;
+                    if (especie == Especie.Cachorro)
+                        return new Cachorro(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, (Porte)r.porte, r.raca, r.cor);
+                    if (especie == Especie.Gato)
+                        return new Gato(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, r.raca, r.cor);
+                    throw new Exception("Tipo de pet inválido");
+                }).ToList();
             }
         }
-
-     
-
 
         /*
         public Task AlterarDados(long id, Tutor tutor)

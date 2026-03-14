@@ -11,9 +11,9 @@ namespace pet.Application.Interfaces
     public interface IPetService
     {
         Task AdicionarPet (PetCreateDTO pet);
-        Task <List<Pet>> ListarPet();
+        Task <List<PetResponseDTO>> ListarPet();
         Task DesativarPet(long id);
-        Task <Pet> BuscarPorId (long id);
+        Task <PetResponseDTO> BuscarPorId (long id);
         
         
     }

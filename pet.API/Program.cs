@@ -10,6 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Singleton roda em segundo plano junto com a aplicação, só fecha quando encerra a aplicação
 // Scoped tem início, meio e fim igual qualquer requisição
 
+// CORS para autorizar o acesso do frontend — adiciona antes do builder.Build()
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Usando de Singleton
 builder.Services.AddSingleton<DbConnection>(sp =>
 {
@@ -69,6 +80,10 @@ builder.Services.AddSwaggerGen(c =>
     }
 
     app.UseHttpsRedirection();
+
+    // CORS — deve vir antes do UseAuthorization e MapControllers
+    app.UseCors("PermitirFrontend");
+
     app.UseAuthorization();
     app.MapControllers();
     app.Run();

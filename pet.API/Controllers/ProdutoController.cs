@@ -36,14 +36,14 @@ namespace pet.API.Controllers
             return Ok(listar);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Atualizar(long id, ProdutoUpdateDTO produto)
         {
             await produtoService.AtualizarProduto(id, produto);
             return Ok("Produto atualizado com sucesso");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Deletar(long id)
         {
             await produtoService.DeletarProduto(id);

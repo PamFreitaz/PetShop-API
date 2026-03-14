@@ -41,9 +41,21 @@ namespace pet.Application.Services
         {
             return repository.BuscarPorId(id);
         }
-        public Task<List<Pet>> BuscarPets(long id)
+        public async Task<List<PetResponseDTO>> BuscarPets(long id)
         {
-            return repository.BuscarPets(id);
+            var pets = await repository.BuscarPets(id);
+            return pets.Select(pet => new PetResponseDTO
+            {
+                Id = pet.Id,
+                Nome = pet.Nome,
+                DataNascimento = pet.DataNascimento,
+                TutorId = pet.TutorId,
+                Especie = pet.Especie,
+                Ativo = pet.Ativo,
+                Porte = pet is Cachorro cachorro ? cachorro.Porte : null,
+                Raca = pet is Cachorro c ? c.Raca : (pet is Gato gato ? gato.Raca : null),
+                Cor = pet is Cachorro c2 ? c2.Cor : (pet is Gato g2 ? g2.Cor : null),
+            }).ToList();
         }
 
         /*public Task AlterarDadosTutor(long id, Tutor tutor)
