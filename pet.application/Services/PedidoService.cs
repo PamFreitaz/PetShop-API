@@ -34,6 +34,15 @@ namespace pet.Application.Services
                 throw new Exception("Pedido tem que ter algum item");
             }
 
+            foreach (var item in pedidoDTO.ItensPedidos)
+            {
+                var produto = await produtoRepository.Buscar(item.ProdutoId);
+                if (produto == null)
+                    throw new Exception($"Produto {item.ProdutoId} não encontrado!");
+                if (produto.QuantidadeEstoque < item.Quantidade)
+                    throw new Exception($"Estoque insuficiente para o produto {produto.Nome}. Disponível: {produto.QuantidadeEstoque}");
+            }
+
             //criando uma nova entidade para depois salvar no banco porque estava usando o PedidoCreateDTO
             var pedidoEntity = new Pedido
             {   
@@ -53,6 +62,9 @@ namespace pet.Application.Services
             {
                 var produto = await produtoRepository.Buscar(item.ProdutoId); //busca dados do produto com o id do itemPedidoDTO
                 var subTotal = produto.Valor * item.Quantidade;
+                
+                int novoEstoque = produto.QuantidadeEstoque -= item.Quantidade;
+                await produtoRepository.DarBaixa(novoEstoque,produto.Id);
 
                 var itemPedido = new ItemPedido
                 {

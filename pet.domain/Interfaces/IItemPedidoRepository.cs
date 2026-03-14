@@ -9,6 +9,7 @@ namespace pet.Domain.Interfaces
 {
     public interface IItemPedidoRepository
     {
+        //Long pq vai retornar o ID do itemPedido
         Task<long> Adicionar(ItemPedido itemPedido);
         Task RemoverItensPedido(long id);
     }

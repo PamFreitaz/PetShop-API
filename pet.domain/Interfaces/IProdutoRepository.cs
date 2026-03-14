@@ -15,5 +15,6 @@ namespace pet.Domain.Interfaces
         Task Atualizar(Produto produto);
         Task Deletar(long id);
         Task<List<Produto>>ListarPorCategoria(long id);
+        Task DarBaixa(int Estoque, long id);
     }
 }

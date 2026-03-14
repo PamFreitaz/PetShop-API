@@ -23,7 +23,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "INSERT INTO produto (nome, descricao, valor, ativo, categoria_id) VALUES (@Nome, @Descricao, @Valor, @Ativo, @CategoriaId)";
+                var SqlQuery = "INSERT INTO produto (nome, descricao, valor, ativo, categoria_id, quantidade_estoque) VALUES (@Nome, @Descricao, @Valor, @Ativo, @CategoriaId, @QuantidadeEstoque)";
                 await DbConnection.ExecuteAsync(SqlQuery, produto);
             }    
         }
@@ -32,7 +32,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId FROM produto";
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId, quantidade_estoque AS QuantidadeEstoque FROM produto";
                 return (await DbConnection.QueryAsync<Produto>(SqlQuery)).ToList();
             }
         }
@@ -41,7 +41,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId FROM produto WHERE Id = @Id";
+                var SqlQuery = "SELECT id, nome, descricao, valor, ativo, categoria_id AS CategoriaId, quantidade_estoque AS QuantidadeEstoque FROM produto WHERE Id = @Id";
                 return await DbConnection.QueryFirstOrDefaultAsync<Produto>(SqlQuery, new { Id = id });
             }
         }
@@ -52,6 +52,15 @@ namespace pet.Infrastructure.Repositories
             {
                 var SqlQuery = "UPDATE produto SET nome = @Nome, descricao = @Descricao, valor = @Valor, ativo = @Ativo, categoria_id = @CategoriaId WHERE Id = @Id";
                 await DbConnection.ExecuteAsync(SqlQuery, produto);
+            }
+        }
+
+        public async Task DarBaixa(int Estoque, long id)
+        {
+            using (var DbConnection = Connection.CreateConnection())
+            {
+                var SqlQuery = "UPDATE produto SET quantidade_estoque = @QuantidadeEstoque WHERE Id = @Id";
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, QuantidadeEstoque = Estoque });
             }
         }
 

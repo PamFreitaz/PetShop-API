@@ -15,13 +15,14 @@ namespace pet.Domain.Entity
         public double Valor { get; set; }
         public bool Ativo { get; set; }
         public long CategoriaId { get; set; }
+        public int QuantidadeEstoque {  get; set; }
 
         public Produto()
         {
             
         }
 
-        public Produto(long id, string nome, string descricao, double valor, bool ativo, long categoriaId)
+        public Produto(long id, string nome, string descricao, double valor, bool ativo, long categoriaId, int quantidadeEstoque)
         {
             Id = id;
             Nome = nome;
@@ -29,6 +30,7 @@ namespace pet.Domain.Entity
             Valor = valor;
             Ativo = ativo;
             CategoriaId = categoriaId;
+            QuantidadeEstoque = quantidadeEstoque;
         }
     }
 }
