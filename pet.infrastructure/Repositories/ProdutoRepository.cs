@@ -4,6 +4,7 @@ using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,12 +56,12 @@ namespace pet.Infrastructure.Repositories
             }
         }
 
-        public async Task DarBaixa(int Estoque, long id)
+        public async Task DarBaixa(int Estoque, long id, IDbConnection connection, IDbTransaction transaction)
         {
             using (var DbConnection = Connection.CreateConnection())
             {
                 var SqlQuery = "UPDATE produto SET quantidade_estoque = @QuantidadeEstoque WHERE Id = @Id";
-                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, QuantidadeEstoque = Estoque });
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, QuantidadeEstoque = Estoque }, transaction);
             }
         }
 

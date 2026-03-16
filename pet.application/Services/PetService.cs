@@ -73,6 +73,11 @@ namespace pet.Application.Services
             var pets = await repository.Listar();
             return pets.Select(ConverterParaDTO).ToList();
         }
+        public async Task<List<PetResponseDTO>> ListarPetsAtivos()
+        {
+            var pets = await repository.ListarAtivos();
+            return pets.Select(ConverterParaDTO).ToList();
+        }
 
         private PetResponseDTO ConverterParaDTO(Pet pet)
         {

@@ -42,5 +42,12 @@ namespace pet.API.Controllers
             return Ok(pets);
         }
 
+        [HttpGet("ativos")]
+        public async Task<IActionResult> ListarAtivos()
+        {
+            var pets = await service.ListarPetsAtivos();
+            return Ok(pets);
+        }
+
     }
 }

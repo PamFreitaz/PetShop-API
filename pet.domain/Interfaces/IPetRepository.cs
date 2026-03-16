@@ -14,5 +14,6 @@ namespace pet.Domain.Interfaces
         Task<List<Pet>> Listar();
         Task Desativar(long id);
         Task<Pet> BuscarPorId(long id);
+        Task <List<Pet>> ListarAtivos();
     }
 }

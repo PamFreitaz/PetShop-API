@@ -4,6 +4,7 @@ using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,21 +20,21 @@ namespace pet.Infrastructure.Repositories
             Connection = Db;
         }
 
-        public async Task<long> Adicionar(Pedido pedido)
+        public async Task<long> Adicionar(Pedido pedido, IDbConnection connection, IDbTransaction transaction)
         {
             using (var DbConnection = Connection.CreateConnection())
             {
                 var SqlQuery = "INSERT INTO pedido (data_criacao, valor_total, status, tutor_id) VALUES (@DataCriacao, @ValorTotal, @StatusPedido, @TutorId) returning id";
-                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, pedido);
+                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, pedido, transaction);
             }
         }
 
-        public async Task AtualizarTotal(long id, double Total)
+        public async Task AtualizarTotal(long id, double Total, IDbConnection connection, IDbTransaction transaction)
         {
             using (var DbConnection = Connection.CreateConnection())
             {
                 var SqlQuery = "UPDATE pedido SET valor_total = @ValorTotal WHERE Id = @Id";
-                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, ValorTotal = Total });
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, ValorTotal = Total }, transaction);
             }   
         }
 

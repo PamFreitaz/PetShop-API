@@ -4,6 +4,7 @@ using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,12 @@ namespace pet.Infrastructure.Repositories
             Connection = Db;
         }
 
-        public async Task<long> Adicionar(ItemPedido itemPedido)
+        public async Task<long> Adicionar(ItemPedido itemPedido, IDbConnection connection, IDbTransaction transaction)
         {
             using (var DbConnection = Connection.CreateConnection())
             {
                 var SqlQuery = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, valor_unitario, subtotal) VALUES (@PedidoId, @ProdutoId, @Quantidade, @ValorUnitario, @Subtotal) returning id";
-                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, itemPedido);
+                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, itemPedido, transaction);
             }
         }
         public async Task RemoverItensPedido(long id)

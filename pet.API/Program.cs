@@ -4,6 +4,7 @@ using pet.Application.Services;
 using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using pet.Infrastructure.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,13 @@ builder.Services.AddSingleton<DbConnection>(sp =>
     return new DbConnection(connectionString);
 });
 
+builder.Services.AddSingleton<IDbConnectionFactory>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new DbConnection(connectionString);
+});
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -36,6 +44,9 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Pet Shop API",
         Version = "v1"
     });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
     // Add services to the container.
@@ -52,6 +63,7 @@ builder.Services.AddSwaggerGen(c =>
     builder.Services.AddScoped<IVisitaService, VisitaService>();
     builder.Services.AddScoped<IVisitaRepository, VisitaRepository>();
 
+    builder.Services.AddScoped<IServicoService, ServicoService>();
     builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 
     builder.Services.AddScoped<IProdutoService, ProdutoService>();

@@ -14,6 +14,7 @@ namespace pet.Application.Interfaces
         Task <List<PetResponseDTO>> ListarPet();
         Task DesativarPet(long id);
         Task <PetResponseDTO> BuscarPorId (long id);
+        Task <List<PetResponseDTO>> ListarPetsAtivos(); 
         
         
     }

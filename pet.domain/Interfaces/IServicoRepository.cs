@@ -10,6 +10,9 @@ namespace pet.Domain.Interfaces
     public interface IServicoRepository
     {
         Task<Servico>BuscarPorId(long id);
-
+        Task Adicionar(Servico servico);
+        Task<List<Servico>> Listar();
+        Task Alterar(long id, Servico servico);
+        Task Desativar(long id);
     }
 }

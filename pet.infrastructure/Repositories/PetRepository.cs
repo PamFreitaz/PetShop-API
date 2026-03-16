@@ -103,5 +103,24 @@ namespace pet.Infrastructure.Repositories
                 }).ToList();
             }
         }
+        public async Task<List<Pet>> ListarAtivos()
+        {
+            using (var DbConnection = connection.CreateConnection())
+            {
+                var SqlQuery = "SELECT id, nome, data_nascimento::timestamp AS DataNascimento, tutor_id AS TutorId, especie, porte AS Porte, raca AS Raca, cor AS Cor, ativo FROM pet WHERE ativo = true";
+                var resultado = await DbConnection.QueryAsync<dynamic>(SqlQuery);
+
+                //usando lambda
+                return resultado.Select<dynamic, Pet>(r =>
+                {
+                    var especie = (Especie)r.especie;
+                    if (especie == Especie.Cachorro)
+                        return new Cachorro(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, (Porte)r.porte, r.raca, r.cor);
+                    if (especie == Especie.Gato)
+                        return new Gato(r.id, r.nome, r.datanascimento, r.tutorid, especie, r.ativo, r.raca, r.cor);
+                    throw new Exception("Tipo de pet inválido");
+                }).ToList();
+            }
+        }
     }
 }

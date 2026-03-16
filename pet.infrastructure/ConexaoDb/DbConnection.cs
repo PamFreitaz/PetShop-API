@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using pet.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace pet.Infrastructure.ConexaoDb
 {
-    public class DbConnection
+    public class DbConnection : IDbConnectionFactory
     {
         private readonly string _connectionString;
 
@@ -20,6 +21,13 @@ namespace pet.Infrastructure.ConexaoDb
         public IDbConnection CreateConnection()
         {
             return new NpgsqlConnection(_connectionString);
+        }
+
+        public IDbConnection CreateOpenConnection()
+        {
+            var connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            return connection;
         }
     }
 }
