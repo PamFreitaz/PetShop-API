@@ -22,11 +22,8 @@ namespace pet.Infrastructure.Repositories
 
         public async Task<long> Adicionar(ItemPedido itemPedido, IDbConnection connection, IDbTransaction transaction)
         {
-            using (var DbConnection = Connection.CreateConnection())
-            {
                 var SqlQuery = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, valor_unitario, subtotal) VALUES (@PedidoId, @ProdutoId, @Quantidade, @ValorUnitario, @Subtotal) returning id";
-                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, itemPedido, transaction);
-            }
+                return await connection.ExecuteScalarAsync<long>(SqlQuery, itemPedido, transaction);
         }
         public async Task RemoverItensPedido(long id)
         {

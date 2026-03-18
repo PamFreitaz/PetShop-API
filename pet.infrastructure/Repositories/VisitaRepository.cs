@@ -22,7 +22,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "INSERT INTO visita (data_visita, servicos, pet_id, valor, status) VALUES (@Data, @Servicos, @PetId, @Valor, @statusVisita)";
+                var SqlQuery = "INSERT INTO visita (data_visita, servico_id, pet_id, valor, status) VALUES (@Data, @ServicoId, @PetId, @Valor, @StatusVisita)";
                 await DbConnection.ExecuteAsync(SqlQuery, visita);
             }
         }
@@ -31,7 +31,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "UPDATE visita SET data_visita = @data, servicos = @servicos, pet_id = @PetId, valor = @valor, status = @statusVisita WHERE Id = @Id";
+                var SqlQuery = "UPDATE visita SET data_visita = @data, servico_id = @servicoId, pet_id = @PetId, valor = @valor, status = @StatusVisita WHERE Id = @Id";
                 await DbConnection.ExecuteAsync(SqlQuery, visita);
             }    
         }
@@ -40,7 +40,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, data_visita::timestamp AS data, servicos, pet_id, valor, status AS statusVisita FROM visita WHERE Id = @Id ";
+                var SqlQuery = "SELECT id, data_visita::timestamp AS data, servico_id, pet_id, valor, status AS StatusVisita FROM visita WHERE Id = @Id ";
                 return await DbConnection.QueryFirstOrDefaultAsync<Visita>(SqlQuery, new { Id = id });
             }
         }
@@ -58,7 +58,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = Connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, data_visita::timestamp AS data, servicos, pet_id AS PetId, valor, status AS statusVisita FROM visita";
+                var SqlQuery = "SELECT id, data_visita::timestamp AS data, servico_id, pet_id AS PetId, valor, status AS StatusVisita FROM visita";
                 return (await DbConnection.QueryAsync<Visita>(SqlQuery)).ToList();
             }
         }

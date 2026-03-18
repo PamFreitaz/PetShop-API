@@ -1,4 +1,5 @@
 ﻿using pet.Application.DTOs;
+using pet.Application.Handler;
 using pet.Application.Interfaces;
 using pet.Domain.Entity;
 using pet.Domain.Interfaces;
@@ -26,25 +27,9 @@ namespace pet.Application.Services
             itemPedidoRepository = itemPedido;
             dbConnectionFactory = db;
         }
-
-        
-
         public async Task CriarPedido(PedidoCreateDTO pedidoDTO)
         {
-            //se o pedido for nullo ou menor que 1, vai dar o erro de Pedido tem que ter algum item
-            if(pedidoDTO.ItensPedidos == null || pedidoDTO.ItensPedidos.Count < 1)
-            {
-                throw new Exception("Pedido tem que ter algum item");
-            }
-
-            foreach (var item in pedidoDTO.ItensPedidos)
-            {
-                var produto = await produtoRepository.Buscar(item.ProdutoId);
-                if (produto == null)
-                    throw new Exception($"Produto {item.ProdutoId} não encontrado!");
-                if (produto.QuantidadeEstoque < item.Quantidade)
-                    throw new Exception($"Estoque insuficiente para o produto {produto.Nome}. Disponível: {produto.QuantidadeEstoque}");
-            }
+            await PedidoUtil.ValidarPedido(pedidoDTO, produtoRepository);
 
             // abre UMA conexão para todas as operações
             using var connection = dbConnectionFactory.CreateOpenConnection();
@@ -56,7 +41,6 @@ namespace pet.Application.Services
                 //criando uma nova entidade para depois salvar no banco porque estava usando o PedidoCreateDTO
                 var pedidoEntity = new Pedido
                 {
-
                     TutorId = pedidoDTO.TutorId,                             //TutorId vem do DTO
                     StatusPedido = Domain.Enum.StatusPedido.PedidoEmAnalise, //StatusPedido estou setando para inicializar o pedido que vem do Enum StatusPedido e estabelecendo que todo pedido comece com o status em analise
                     DataCriacao = DateTime.Now,                              //DataCriacao setando sempre como a data atual
@@ -131,48 +115,55 @@ namespace pet.Application.Services
         public async Task AtualizarPedido(long id, PedidoUpdateDTO pedidoDTO)
         {
             var pedidoExistente = await BuscarPedidoPorId(id);
+            PedidoUtil.PedidoExiste(pedidoExistente);
+            await PedidoUtil.VerificarPedidoAtualizado(pedidoDTO, produtoRepository);
 
-            using var connection = dbConnectionFactory.CreateOpenConnection(); 
-            using var transaction = connection.BeginTransaction();
-
-            if (pedidoExistente == null)
-            {
-                throw new Exception("Pedido não encontrado");
-            }
-            if(pedidoDTO.StatusPedido.HasValue)
+            if (pedidoDTO.StatusPedido.HasValue)
             {
                 pedidoExistente.StatusPedido = pedidoDTO.StatusPedido.Value;
             }
-            if(pedidoDTO.ValorTotal.HasValue)
+
+            if (pedidoDTO.ValorTotal.HasValue)
             {
                 pedidoExistente.ValorTotal = pedidoDTO.ValorTotal.Value;
             }
-            if (pedidoDTO.ItensPedidos != null && pedidoDTO.ItensPedidos.Any())
+            using var connection = dbConnectionFactory.CreateOpenConnection();
+            using var transaction = connection.BeginTransaction();
+            try
             {
-                await itemPedidoRepository.RemoverItensPedido(id);
-
-                double novoTotal = 0;
-
-                foreach(var itemDTO in pedidoDTO.ItensPedidos)
+                if (pedidoDTO.ItensPedidos != null && pedidoDTO.ItensPedidos.Any())
                 {
-                    var produto = await produtoRepository.Buscar(itemDTO.ProdutoId); 
-                    var subTotal = produto.Valor * itemDTO.Quantidade;
+                    // agora o RemoverItensPedido está DENTRO da transaction
+                    await itemPedidoRepository.RemoverItensPedido(id);
 
-                    var itemPedido = new ItemPedido
+                    double novoTotal = 0;
+                    foreach (var itemDTO in pedidoDTO.ItensPedidos)
                     {
-                        PedidoId = id,
-                        ProdutoId = itemDTO.ProdutoId,
-                        Quantidade = itemDTO.Quantidade,
-                        ValorUnitario = produto.Valor,
-                        Subtotal = subTotal,
-                    };
-                    
-                    await itemPedidoRepository.Adicionar(itemPedido, connection,transaction);
-                    
-                    novoTotal += subTotal;
+                        var produto = await produtoRepository.Buscar(itemDTO.ProdutoId);
+                        var subTotal = produto.Valor * itemDTO.Quantidade;
+
+                        var itemPedido = new ItemPedido
+                        {
+                            PedidoId = id,
+                            ProdutoId = itemDTO.ProdutoId,
+                            Quantidade = itemDTO.Quantidade,
+                            ValorUnitario = produto.Valor,
+                            Subtotal = subTotal,
+                        };
+
+                        await itemPedidoRepository.Adicionar(itemPedido, connection, transaction);
+                        novoTotal += subTotal;
+                    }
                 }
+
+                await pedidoRepository.Atualizar(id, pedidoExistente);
+                transaction.Commit();
             }
-            await pedidoRepository.Atualizar(id, pedidoExistente);
+            catch
+            {
+                transaction.Rollback();
+                throw new Exception("Erro ao atualizar o pedido, tente novamente");
+            }
         }
 
         public Task CancelarPedido(long id)

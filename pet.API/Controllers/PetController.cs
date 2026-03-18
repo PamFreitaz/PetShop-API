@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using pet.Application.DTOs;
 using pet.Application.Interfaces;
 
@@ -6,6 +7,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("pet")]
+   // [Authorize]
     public class PetController : ControllerBase
     {
         public readonly IPetService service;

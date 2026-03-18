@@ -22,20 +22,14 @@ namespace pet.Infrastructure.Repositories
 
         public async Task<long> Adicionar(Pedido pedido, IDbConnection connection, IDbTransaction transaction)
         {
-            using (var DbConnection = Connection.CreateConnection())
-            {
                 var SqlQuery = "INSERT INTO pedido (data_criacao, valor_total, status, tutor_id) VALUES (@DataCriacao, @ValorTotal, @StatusPedido, @TutorId) returning id";
-                return await DbConnection.ExecuteScalarAsync<long>(SqlQuery, pedido, transaction);
-            }
+                return await connection.ExecuteScalarAsync<long>(SqlQuery, pedido, transaction);
         }
 
         public async Task AtualizarTotal(long id, double Total, IDbConnection connection, IDbTransaction transaction)
         {
-            using (var DbConnection = Connection.CreateConnection())
-            {
                 var SqlQuery = "UPDATE pedido SET valor_total = @ValorTotal WHERE Id = @Id";
-                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, ValorTotal = Total }, transaction);
-            }   
+                await connection.ExecuteAsync(SqlQuery, new { Id = id, ValorTotal = Total }, transaction);
         }
 
         public async Task<Pedido> BuscarPorId(long id)

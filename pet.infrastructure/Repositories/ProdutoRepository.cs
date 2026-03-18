@@ -58,12 +58,11 @@ namespace pet.Infrastructure.Repositories
 
         public async Task DarBaixa(int Estoque, long id, IDbConnection connection, IDbTransaction transaction)
         {
-            using (var DbConnection = Connection.CreateConnection())
-            {
+            
                 var SqlQuery = "UPDATE produto SET quantidade_estoque = @QuantidadeEstoque WHERE Id = @Id";
-                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, QuantidadeEstoque = Estoque }, transaction);
-            }
+                await connection.ExecuteAsync(SqlQuery, new { Id = id, QuantidadeEstoque = Estoque }, transaction);
         }
+        
 
         public async Task Deletar(long id)
         {

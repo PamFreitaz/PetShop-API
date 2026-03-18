@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using pet.Application.DTOs;
 using pet.Application.Interfaces;
 using pet.Domain.Entity;
@@ -7,6 +8,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("produto")]
+    //[Authorize(Roles = "Admin")]
     public class ProdutoController : ControllerBase
     {
         public readonly IProdutoService produtoService;

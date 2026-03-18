@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using pet.Application.DTOs;
 using pet.Application.Interfaces;
 using pet.Application.Services;
@@ -8,6 +9,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("Visita")]
+    //[Authorize (Roles = "Admin, Funcionario")]
     public class VisitaController : ControllerBase
     {
         public readonly IVisitaService VisitaService;

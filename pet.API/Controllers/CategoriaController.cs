@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using pet.Application.Interfaces;
 using pet.Domain.Entity;
 
@@ -6,6 +7,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("categoria")]
+    //[Authorize(Roles = "Admin")]
     public class CategoriaController : ControllerBase
     {
         public readonly ICategoriaService categoriaService;

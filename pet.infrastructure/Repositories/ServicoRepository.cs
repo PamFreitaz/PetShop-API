@@ -33,7 +33,7 @@ namespace pet.Infrastructure.Repositories
             using (var DbConnection = connection.CreateConnection())
             {
                 var SqlQuery = "UPDATE servico SET nome = @Nome, descricao = @Descricao, preco = @Preco, ativo = @Ativo WHERE id = @Id";
-                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id });
+                await DbConnection.ExecuteAsync(SqlQuery, new { Id = id, servico.Nome, servico.Descricao, servico.Preco, servico.Ativo });
             }
         }
 
@@ -50,7 +50,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "UPDATE set ativo = false WHERE id = @Id";
+                var SqlQuery = "UPDATE servico set ativo = false WHERE id = @Id";
                 await DbConnection.ExecuteAsync(SqlQuery, new {Id = id});
             }
         }

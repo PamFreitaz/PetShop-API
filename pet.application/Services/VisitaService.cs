@@ -27,7 +27,7 @@ namespace pet.Application.Services
         {   //uso o metodo BuscarPorId do PetRepository para me trazer as informações do Pet
             var pet = await PetRepository.BuscarPorId(visita.PetId);
             //uso o metodo BuscarPorIa do ServicoRepository para trazer a informação do enum servicos, por isso o (int)
-            var servico = await ServicoRepository.BuscarPorId((int)visita.Servicos);
+            var servico = await ServicoRepository.BuscarPorId(visita.ServicoId);
 
             double Multiplicador = pet.MultiplicadorDePorte();
 
@@ -38,7 +38,7 @@ namespace pet.Application.Services
             {
 
                 Data = visita.Data,
-                Servicos = visita.Servicos,
+                ServicoId = visita.ServicoId,
                 PetId = visita.PetId,
                 Valor = valor,
                 //toda vez que criar uma visita vai setar como agendado
@@ -60,9 +60,9 @@ namespace pet.Application.Services
             {
                 visitaExistente.Data = visita.Data.Value;
             }
-            if (visita.Servicos.HasValue)
+            if (visita.ServicoId.HasValue)
             {
-                visitaExistente.Servicos = visita.Servicos.Value;
+                visitaExistente.ServicoId = visita.ServicoId.Value;
             }
             if (visita.PetId.HasValue)
             {
@@ -72,9 +72,9 @@ namespace pet.Application.Services
             {
                 visitaExistente.Valor = visita.Valor.Value;
             }
-            if (visita.statusVisita.HasValue)
+            if (visita.StatusVisita.HasValue)
             {
-                visitaExistente.StatusVisita = visita.statusVisita.Value;
+                visitaExistente.StatusVisita = visita.StatusVisita.Value;
             }
             await VisitaRepository.Atualizar(visitaExistente);
                          

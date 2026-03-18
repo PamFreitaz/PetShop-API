@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using pet.Application.Interfaces;
 using pet.Application.Services;
@@ -5,8 +7,10 @@ using pet.Domain.Interfaces;
 using pet.Infrastructure.ConexaoDb;
 using pet.Infrastructure.Repositories;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwt = builder.Configuration.GetSection("Jwt");
 
 // Singleton roda em segundo plano junto com a aplicação, só fecha quando encerra a aplicação
 // Scoped tem início, meio e fim igual qualquer requisição
@@ -36,6 +40,26 @@ builder.Services.AddSingleton<IDbConnectionFactory>(sp =>
     var connectionString = configuration.GetConnectionString("DefaultConnection");
     return new DbConnection(connectionString);
 });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwt["Issuer"],
+        ValidAudience = jwt["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwt["Key"]!)
+        )
+    };
+});
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -44,18 +68,44 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Pet Shop API",
         Version = "v1"
     });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Digite: Bearer {seu token JWT}"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
+
+
 
     // Add services to the container.
 
     builder.Services.AddControllers();
 
     // Usando o Scoped
-    builder.Services.AddScoped<ITutorService, TutorService>();
-    builder.Services.AddScoped<ITutorRepository, TutorRepository>();
+    builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+    builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
     builder.Services.AddScoped<IPetRepository, PetRepository>();
     builder.Services.AddScoped<IPetService, PetService>();
@@ -77,9 +127,11 @@ builder.Services.AddSwaggerGen(c =>
     builder.Services.AddScoped<ICategoriaService, CategoriaService>();
     builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
+    builder.Services.AddScoped<IAuthService, AuthService>();
 
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();

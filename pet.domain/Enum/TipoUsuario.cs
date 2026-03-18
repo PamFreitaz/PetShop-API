@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace pet.Domain.Enum
 {
-    public enum Servicos
+    public enum TipoUsuario
     {
-        Banho = 1 ,        
-        BanhoETosaHigienica = 2  ,
-        BanhoETosaCompleta = 3,
-        DayCare = 4        
+        Admin = 1,
+        Funcionario = 2,
+        Cliente = 3
     }
 }

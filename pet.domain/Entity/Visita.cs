@@ -11,7 +11,7 @@ namespace pet.Domain.Entity
     {
         public int Id { get; set; }
         public DateTime Data { get; set; }
-        public Servicos Servicos { get; set; }
+        public long ServicoId { get; set; }
         public long PetId { get; set; }
         public double Valor { get; set; }
         public StatusVisita StatusVisita { get; set; }
@@ -21,11 +21,11 @@ namespace pet.Domain.Entity
         {
         }
 
-        public Visita(int id, DateTime data, Servicos servicos, long petId, double valor, StatusVisita statusVisita)
+        public Visita(int id, DateTime data, long servicoId, long petId, double valor, StatusVisita statusVisita)
         {
             Id = id;
             Data = data;
-            Servicos = servicos;
+            ServicoId = servicoId;
             PetId = petId;
             Valor = valor;
             StatusVisita = statusVisita;
