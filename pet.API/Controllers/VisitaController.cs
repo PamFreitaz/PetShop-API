@@ -9,7 +9,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("Visita")]
-    //[Authorize (Roles = "Admin, Funcionario")]
+    [Authorize (Roles = "Admin, Funcionario")]
     public class VisitaController : ControllerBase
     {
         public readonly IVisitaService VisitaService;

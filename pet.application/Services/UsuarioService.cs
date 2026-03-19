@@ -40,15 +40,32 @@ namespace pet.Application.Services
 
             return repository.Cadastrar(UsuarioEntity);
         }
-
-        public Task<List<Usuario>> ListarUsuarios()
+        private UsuarioResponseDTO ConverterParaDTO(Usuario usuario)
         {
-            return repository.Listar();
+            return new UsuarioResponseDTO
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Cpf = usuario.Cpf,
+                Email = usuario.Email,
+                Telefone = usuario.Telefone,
+                DataNascimento = usuario.DataNascimento,
+                DataCadastro = usuario.DataCadastro,
+                TipoUsuario = usuario.TipoUsuario,
+            };
         }
 
-        public Task <Usuario> BuscarPorId(long id)
+
+        public async Task<List<UsuarioResponseDTO>> ListarUsuarios()
         {
-            return repository.BuscarPorId(id);
+            var usuarios = await repository.Listar();
+            return usuarios.Select(ConverterParaDTO).ToList();
+        }
+
+        public async Task<UsuarioResponseDTO> BuscarPorId(long id)
+        {
+            var usuario = await repository.BuscarPorId(id);
+            return ConverterParaDTO(usuario);
         }
         public async Task<List<PetResponseDTO>> BuscarPets(long id)
         {
@@ -98,9 +115,11 @@ namespace pet.Application.Services
             await repository.Atualizar(usuario);
         }
 
-        public async Task<List<Usuario>>ListarPorTipo(TipoUsuario tipoUsuario)
+        public async Task<List<UsuarioResponseDTO>> ListarPorTipo(TipoUsuario tipoUsuario)
         {
-            return await repository.ListarPorUsuario(tipoUsuario);
+            var usuarios = await repository.ListarPorUsuario(tipoUsuario);
+            return usuarios.Select(ConverterParaDTO).ToList();
         }
+
     }
 }

@@ -12,12 +12,12 @@ namespace pet.Application.Interfaces
     public interface IUsuarioService
     {
         Task CadastrarUsuario(UsuarioCreateDTO tutor);
-        Task<List<Usuario>> ListarUsuarios();
-        Task <Usuario> BuscarPorId(long id);
+        Task<List<UsuarioResponseDTO>> ListarUsuarios();
+        Task <UsuarioResponseDTO> BuscarPorId(long id);
         Task<List<PetResponseDTO>> BuscarPets(long id);
         
         Task AtualizarUsuario(long id, UsuarioUpdateDTO usuario);
-        Task<List<Usuario>> ListarPorTipo(TipoUsuario tipoUsuario);
+        Task<List<UsuarioResponseDTO>> ListarPorTipo(TipoUsuario tipoUsuario);
 
 
     }

@@ -7,7 +7,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("pet")]
-   // [Authorize]
+    [Authorize]
     public class PetController : ControllerBase
     {
         public readonly IPetService service;

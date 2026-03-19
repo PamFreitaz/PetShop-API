@@ -8,7 +8,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("servico")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ServicoController : ControllerBase
     {
         public readonly IServicoService servicoService;

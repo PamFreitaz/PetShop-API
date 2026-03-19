@@ -31,7 +31,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var dbConnenction = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario FROM usuario";
+                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario, data_cadastro::timestamp AS DataCadastro FROM usuario";
                 return (await dbConnenction.QueryAsync<Usuario>(SqlQuery)).ToList();
             }
         }
@@ -40,7 +40,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var dbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha,tipo_usuario AS TipoUsuario FROM usuario WHERE id = @Id";
+                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha,tipo_usuario AS TipoUsuario, data_cadastro::timestamp AS DataCadastro FROM usuario WHERE id = @Id";
                 return await dbConnection.QueryFirstOrDefaultAsync<Usuario>(SqlQuery,new {Id = id});
             }
         }
@@ -67,7 +67,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var dbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario FROM usuario WHERE email = @Email";
+                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario, data_cadastro::timestamp AS DataCadastro FROM usuario WHERE email = @Email";
                 return await dbConnection.QueryFirstOrDefaultAsync<Usuario>(SqlQuery, new { Email = email });
             }
         }
@@ -85,7 +85,7 @@ namespace pet.Infrastructure.Repositories
         {
             using (var DbConnection = connection.CreateConnection())
             {
-                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario FROM usuario WHERE tipo_usuario = @TipoUsuario";
+                var SqlQuery = "SELECT id, nome, cpf, email, telefone, data_nascimento::timestamp AS DataNascimento, senha, tipo_usuario AS TipoUsuario, data_cadastro::timestamp AS DataCadastro FROM usuario WHERE tipo_usuario = @TipoUsuario";
                 return (await DbConnection.QueryAsync<Usuario>(SqlQuery, new { TipoUsuario = tipoUsuario })).ToList();
             }
         }

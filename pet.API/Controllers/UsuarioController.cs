@@ -24,28 +24,28 @@ namespace pet.API.Controllers
             return Ok("Cadastro realizado com sucesso!");
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Funcionario")]
         [HttpGet]
         public async Task<IActionResult> Listar()
         {
             var usuarios = await service.ListarUsuarios();
             return Ok(usuarios);
         }
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> BuscarPorId(long id)
         {
             var usuarios = await service.BuscarPorId(id);
             return Ok(usuarios);
         }
-        //[Authorize]
+        [Authorize]
         [HttpGet("listarpets/{id}")]
         public async Task<IActionResult> BuscarPetPorUsuario(long id)
         {
             var pets = await service.BuscarPets(id);
             return Ok(pets);
         }
-        //[Authorize]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarUsuario(long id, UsuarioUpdateDTO usuarioDTO)
         {
@@ -53,7 +53,7 @@ namespace pet.API.Controllers
             return Ok(usuarioDTO);
         }
 
-        //[Authorize(Roles = "Admin, Funcionario")]
+        [Authorize(Roles = "Admin, Funcionario")]
         [HttpGet("clientes")]
         public async Task<IActionResult> ListarClientes()
         {

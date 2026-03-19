@@ -7,7 +7,7 @@ namespace pet.API.Controllers
 {
     [ApiController]
     [Route("categoria")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoriaController : ControllerBase
     {
         public readonly ICategoriaService categoriaService;
