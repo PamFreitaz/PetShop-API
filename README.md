@@ -1,5 +1,6 @@
 🐾 Pet Shop API - Sistema de Gerenciamento Backend
-Esta API RESTful foi desenvolvida para gerenciar as operações principais de um Pet Shop, incluindo o controle de tutores, pets, agendamento de serviços (visitas) e fluxo de vendas (pedidos). O projeto foca em alta performance, código limpo e escalabilidade.
+
+- Esta API RESTful foi desenvolvida para gerenciar as operações principais de um Pet Shop, incluindo o controle de tutores, pets, agendamento de serviços (visitas) e fluxo de vendas (pedidos). O projeto foca em alta performance, código limpo e escalabilidade.
 
 Arquitetura e Padrões de Projeto
 O sistema foi estruturado seguindo os princípios de Clean Architecture e Domain-Driven Design (DDD), garantindo a separação de responsabilidades:
